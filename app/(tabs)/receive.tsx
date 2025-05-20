@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { WalletData } from "../../utils/wallet";
 
@@ -8,10 +8,15 @@ export default function ReceiveScreen() {
   const params = useLocalSearchParams<{ wallet: string }>();
   const wallet: WalletData = JSON.parse(params.wallet ?? "{}");
 
-  if (!wallet?.address) return <Text>Invalid wallet</Text>;
+  if (!wallet?.address)
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>Invalid wallet</Text>
+      </SafeAreaView>
+    );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Receive ETH or Tokens</Text>
       <Text style={styles.label}>Your Address:</Text>
       <Text selectable style={styles.address}>
@@ -21,7 +26,7 @@ export default function ReceiveScreen() {
       <Text style={styles.info}>
         Scan or copy your address to receive funds.
       </Text>
-    </View>
+    </SafeAreaView>
   );
 }
 

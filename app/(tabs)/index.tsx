@@ -1,6 +1,14 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { createWallet, importWallet } from "../../utils/wallet";
 
 export default function HomeScreen() {
@@ -28,24 +36,30 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to ETH Wallet</Text>
-      <Button title="Create New Wallet" onPress={handleCreate} />
-      <Text style={styles.or}>OR</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter mnemonic to import"
-        value={mnemonic}
-        onChangeText={setMnemonic}
-        multiline
-      />
-      <Button title="Import Wallet" onPress={handleImport} />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Welcome to ETH Wallet</Text>
+        <Button title="Create New Wallet" onPress={handleCreate} />
+        <Text style={styles.or}>OR</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter mnemonic to import"
+          value={mnemonic}
+          onChangeText={setMnemonic}
+          multiline
+        />
+        <Button title="Import Wallet" onPress={handleImport} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    marginHorizontal: 16,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",

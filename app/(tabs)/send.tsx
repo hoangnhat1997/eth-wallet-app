@@ -1,6 +1,14 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { sendEth } from "../../utils/ethereum";
 import { sendToken } from "../../utils/token";
 import { WalletData } from "../../utils/wallet";
@@ -41,7 +49,7 @@ export default function SendScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.label}>Recipient Address</Text>
       <TextInput
         style={styles.input}
@@ -74,12 +82,17 @@ export default function SendScreen() {
         onPress={handleSend}
         disabled={loading}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
+  container: {
+    padding: 20,
+    marginHorizontal: 16,
+    flex: 1,
+    justifyContent: "center",
+  },
   label: { marginTop: 16, marginBottom: 4, fontWeight: "bold" },
   input: {
     borderWidth: 1,
