@@ -1,12 +1,28 @@
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import * as SecureStore from "expo-secure-store";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { WalletData } from "../../utils/wallet";
 
 export default function ReceiveScreen() {
-  const params = useLocalSearchParams<{ wallet: string }>();
-  const wallet: WalletData = JSON.parse(params.wallet ?? "{}");
+  const [wallet, setWallet] = useState<WalletData>({
+    address: "",
+    privateKey: "",
+    mnemonic: "",
+  });
+  useEffect(() => {
+    const getPrivateKey = async () => {
+      const privateKey = await SecureStore.getItemAsync("user_private_key");
+      const address = await SecureStore.getItemAsync("user_address");
+      const mnemonic = await SecureStore.getItemAsync("user_mnemonic");
+      setWallet({
+        address: address || "",
+        privateKey: privateKey || "",
+        mnemonic: mnemonic || "",
+      });
+    };
+    getPrivateKey();
+  }, []);
 
   if (!wallet?.address)
     return (

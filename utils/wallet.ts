@@ -1,4 +1,6 @@
 import { ethers } from "ethers";
+import * as SecureStore from "expo-secure-store";
+
 import "react-native-get-random-values";
 
 export type WalletData = {
@@ -7,8 +9,15 @@ export type WalletData = {
   mnemonic: string;
 };
 
-export function createWallet(): WalletData {
+export async function createWallet(): Promise<WalletData> {
   const wallet = ethers.Wallet.createRandom();
+  await SecureStore.setItemAsync("user_address", wallet.address);
+
+  await SecureStore.setItemAsync("user_private_key", wallet.privateKey);
+  await SecureStore.setItemAsync(
+    "user_mnemonic",
+    wallet.mnemonic?.phrase || ""
+  );
   return {
     address: wallet.address,
     privateKey: wallet.privateKey,

@@ -1,7 +1,7 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Button,
   SafeAreaView,
   ScrollView,
@@ -20,11 +20,29 @@ const ERC20_TOKENS = [
 ];
 
 export default function WalletScreen() {
-  const params = useLocalSearchParams<{ wallet: string }>();
+  // const params = useLocalSearchParams<{ wallet: string }>();
   const router = useRouter();
-  const wallet: WalletData = JSON.parse(params.wallet ?? "{}");
+  const [wallet, setWallet] = useState<WalletData>({
+    address: "",
+    privateKey: "",
+    mnemonic: "",
+  });
   const [ethBalance, setEthBalance] = useState<string>("0");
   const [tokenBalances, setTokenBalances] = useState<TokenBalanceData[]>([]);
+
+  useEffect(() => {
+    const getPrivateKey = async () => {
+      const privateKey = await SecureStore.getItemAsync("user_private_key");
+      const address = await SecureStore.getItemAsync("user_address");
+      const mnemonic = await SecureStore.getItemAsync("user_mnemonic");
+      setWallet({
+        address: address || "",
+        privateKey: privateKey || "",
+        mnemonic: mnemonic || "",
+      });
+    };
+    getPrivateKey();
+  }, []);
 
   useEffect(() => {
     if (!wallet?.address) return;
@@ -45,7 +63,7 @@ export default function WalletScreen() {
         );
         setTokenBalances(tokens);
       } catch (e) {
-        Alert.alert("Error", "Failed to load balances.");
+        throw e;
       }
     })();
   }, [wallet?.address]);
