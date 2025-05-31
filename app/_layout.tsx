@@ -1,5 +1,3 @@
-import "react-native-get-random-values";
-// ...other imports
 import {
   DarkTheme,
   DefaultTheme,

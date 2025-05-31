@@ -1,3 +1,5 @@
+import "react-native-get-random-values";
+
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {

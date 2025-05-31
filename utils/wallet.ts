@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import "react-native-get-random-values";
 
 export type WalletData = {
   address: string;
