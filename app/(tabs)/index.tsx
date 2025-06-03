@@ -19,6 +19,10 @@ export default function HomeScreen() {
 
   const handleCreate = () => {
     const wallet = createWallet();
+    if (!wallet) {
+      Alert.alert("Error", "Failed to create wallet");
+      return;
+    }
     router.push({
       pathname: "/wallet",
       params: { wallet: JSON.stringify(wallet) },

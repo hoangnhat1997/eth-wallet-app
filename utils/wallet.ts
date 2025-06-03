@@ -12,7 +12,6 @@ export type WalletData = {
 export async function createWallet(): Promise<WalletData> {
   const wallet = ethers.Wallet.createRandom();
   await SecureStore.setItemAsync("user_address", wallet.address);
-
   await SecureStore.setItemAsync("user_private_key", wallet.privateKey);
   await SecureStore.setItemAsync(
     "user_mnemonic",
