@@ -1,3 +1,4 @@
+import { useNetwork } from "@/context/NetworkContext";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
@@ -22,11 +23,15 @@ const ERC20_TOKENS = [
 export default function WalletScreen() {
   // const params = useLocalSearchParams<{ wallet: string }>();
   const router = useRouter();
+  const { network } = useNetwork();
+
   const [wallet, setWallet] = useState<WalletData>({
     address: "",
     privateKey: "",
     mnemonic: "",
   });
+
+
   const [ethBalance, setEthBalance] = useState<string>("0");
   const [tokenBalances, setTokenBalances] = useState<TokenBalanceData[]>([]);
 
@@ -81,11 +86,11 @@ export default function WalletScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.containerContent}>
-        <Text style={styles.addressLabel}>Your ETH Address:</Text>
+        <Text style={styles.addressLabel}>Your {network === "ethereum" ? "ETH" : "SOL"} Address:</Text>
         <Text selectable style={styles.address}>
           {wallet.address}
         </Text>
-        <BalanceCard label="ETH" balance={ethBalance} />
+        <BalanceCard label={network === "ethereum" ? "ETH" : "SOL"} balance={ethBalance} />
         <TokenList tokens={tokenBalances} />
         <View style={styles.row}>
           <Button

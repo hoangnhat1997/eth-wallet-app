@@ -11,23 +11,58 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { createWallet, importWallet } from "../../utils/wallet";
+
+import NetworkPicker from "@/components/NetworkPicker";
+import { useNetwork } from "@/context/NetworkContext";
+import { createWalletEthereum, createWalletSolana, importWallet } from "../../utils/wallet";
 
 export default function HomeScreen() {
   const [mnemonic, setMnemonic] = useState("");
+  const { network, setNetwork } = useNetwork();
+
   const router = useRouter();
 
-  const handleCreate = () => {
-    const wallet = createWallet();
-    if (!wallet) {
-      Alert.alert("Error", "Failed to create wallet");
-      return;
-    }
-    router.push({
-      pathname: "/wallet",
-      params: { wallet: JSON.stringify(wallet) },
-    });
-  };
+  // const handleCreate = async () => {
+  //   const wallet = await createWallet();
+
+  //   if (!wallet) {
+  //     Alert.alert("Error", "Failed to create wallet");
+  //     return;
+  //   }
+
+  //   await SecureStore.setItemAsync("user_address", wallet.address);
+  //   await SecureStore.setItemAsync("user_private_key", wallet.privateKey);
+  //   await SecureStore.setItemAsync(
+  //       "user_mnemonic",
+  //       wallet.mnemonic || ""
+  //   );
+
+
+    
+  //   router.push({
+  //     pathname: "/wallet",
+  //     params: { wallet: JSON.stringify(wallet) },
+  //   });
+  // };
+
+    const handleCreateWallet = async  () => {
+      if (network === "ethereum") {
+        const wallet = await createWalletEthereum();
+        router.push({
+          pathname: "/wallet",
+          params: { wallet: JSON.stringify(wallet) },
+        });
+      } else {
+        const wallet = await createWalletSolana();
+        router.push({
+          pathname: "/wallet",
+          params: { wallet: JSON.stringify(wallet) },
+        });
+      }
+    };
+
+
+
 
   const handleImport = () => {
     try {
@@ -44,8 +79,17 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        <Text style={styles.title}>Welcome to ETH Wallet</Text>
-        <Button title="Create New Wallet" onPress={handleCreate} />
+        <NetworkPicker selected={network} onChange={(nw) => setNetwork(nw as "ethereum" | "solana")} />
+
+        <Text style={styles.title}>Welcome to {network === "ethereum" ? "ETH" : "SOL"} Wallet</Text>
+        {/* <Button title="Create New Wallet" onPress={handleCreate} /> */}
+        <Button
+          title={`Create New ${
+            network === "ethereum" ? "Ethereum" : "Solana"
+          } Wallet`}
+          onPress={handleCreateWallet}
+        />
+
         <Text style={styles.or}>OR</Text>
         <TextInput
           style={styles.input}

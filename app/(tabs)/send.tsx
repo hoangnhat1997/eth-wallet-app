@@ -1,3 +1,5 @@
+import { useNetwork } from "@/context/NetworkContext";
+import { sendSolana } from "@/utils/solana";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -13,14 +15,20 @@ import { sendEth } from "../../utils/ethereum";
 import { sendToken } from "../../utils/token";
 import { WalletData } from "../../utils/wallet";
 
-const ERC20_TOKENS = [
+const ETH_TOKENS = [
   { name: "ETH", address: null },
+  { name: "USDT", address: "0x509Ee0d083DdF8AC028f2a56731412edd63223B9" },
+];
+
+const SOL_TOKENS = [
+  { name: "SOL", address: null },
   { name: "USDT", address: "0x509Ee0d083DdF8AC028f2a56731412edd63223B9" },
 ];
 
 export default function SendScreen() {
   const params = useLocalSearchParams<{ wallet: string }>();
   const wallet: WalletData = JSON.parse(params.wallet ?? "{}");
+  const { network } = useNetwork();
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState("ETH");
@@ -36,8 +44,10 @@ export default function SendScreen() {
       let txHash: string;
       if (selectedToken === "ETH") {
         txHash = await sendEth(wallet.privateKey, to, amount);
+      } else if (selectedToken === "SOL") {
+        txHash = await sendSolana(wallet.address, wallet.privateKey, to, amount);
       } else {
-        const token = ERC20_TOKENS.find((t) => t.name === selectedToken);
+        const token = (network === "ethereum" ? ETH_TOKENS : SOL_TOKENS).find((t) => t.name === selectedToken);
         if (!token?.address) throw new Error("Token address not found");
         txHash = await sendToken(wallet.privateKey, token.address, to, amount);
       }
@@ -68,7 +78,7 @@ export default function SendScreen() {
       />
       <Text style={styles.label}>Token</Text>
       <View style={styles.pickerContainer}>
-        {ERC20_TOKENS.map((token) => (
+        {(network === "ethereum" ? ETH_TOKENS : SOL_TOKENS).map((token) => (
           <Button
             key={token.name}
             title={token.name}

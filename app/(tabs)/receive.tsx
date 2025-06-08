@@ -1,3 +1,4 @@
+import { useNetwork } from "@/context/NetworkContext";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
@@ -5,6 +6,7 @@ import QRCode from "react-native-qrcode-svg";
 import { WalletData } from "../../utils/wallet";
 
 export default function ReceiveScreen() {
+  const { network } = useNetwork();
   const [wallet, setWallet] = useState<WalletData>({
     address: "",
     privateKey: "",
@@ -33,7 +35,7 @@ export default function ReceiveScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Receive ETH or Tokens</Text>
+      <Text style={styles.title}>Receive {network === "ethereum" ? "ETH" : "SOL"} or Tokens</Text>
       <Text style={styles.label}>Your Address:</Text>
       <Text selectable style={styles.address}>
         {wallet.address}
