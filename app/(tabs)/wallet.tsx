@@ -35,6 +35,9 @@ export default function WalletScreen() {
       const privateKey = await SecureStore.getItemAsync("user_private_key");
       const address = await SecureStore.getItemAsync("user_address");
       const mnemonic = await SecureStore.getItemAsync("user_mnemonic");
+      console.log("privateKey", privateKey);
+      console.log("address", address);
+      console.log("mnemonic", mnemonic);
       setWallet({
         address: address || "",
         privateKey: privateKey || "",
